@@ -57,27 +57,19 @@ export default function Todo(props) {
           className="position-absolute end-0 top-0"
           size="sm"
         >
-          {/* {console.log(
-            todoId.current[index] ? todoId.current[index].disabled : false
-          )} */}
-          {todoId.current[index].disabled ? (
-            <Button variant="info">
-              <FontAwesomeIcon icon={faCheck} />
-            </Button>
-          ) : (
-            <>
-              <Button variant="secondary" onClick={() => EditItem(index)}>
-                <FontAwesomeIcon icon={faPencilAlt} />
-              </Button>
-              <Button
-                variant="danger"
-                key={index}
-                onClick={() => DeleteItem(index)}
-              >
-                <FontAwesomeIcon icon={faTrashAlt} />
-              </Button>
-            </>
-          )}
+          <Button variant="info">
+            <FontAwesomeIcon icon={faCheck} />
+          </Button>
+          <Button variant="secondary" onClick={() => EditItem(index)}>
+            <FontAwesomeIcon icon={faPencilAlt} />
+          </Button>
+          <Button
+            variant="danger"
+            key={index}
+            onClick={() => DeleteItem(index)}
+          >
+            <FontAwesomeIcon icon={faTrashAlt} />
+          </Button>
         </ButtonGroup>
       </li>
     );
