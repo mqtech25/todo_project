@@ -11,7 +11,7 @@ import { faPencilAlt } from "@fortawesome/fontawesome-free-solid";
 export default function Todo(props) {
   const [todoList, updateVal] = useState([]);
   const [error, updateError] = useState("");
-  const [editList, updateList] = useState(false);
+  const [editList, updateList] = useState([]);
   let todoRef = React.useRef(null);
   let todoId = React.useRef([]);
   function AddItem() {
@@ -31,6 +31,7 @@ export default function Todo(props) {
     );
   }
   function EditItem(index) {
+    updateList([...editList, index]);
     todoId.current[index].disabled = false;
     // updateList(true);
   }
@@ -44,7 +45,6 @@ export default function Todo(props) {
 
     return (
       <li className="list-group-item list-group-item-light " key={index}>
-        {/* {item} */}
         <Form.Control
           value={item}
           disabled
@@ -57,23 +57,44 @@ export default function Todo(props) {
           className="position-absolute end-0 top-0"
           size="sm"
         >
-          {/* {console.log(
-            todoId.current[index] ? todoId.current[index].disabled : false
-          )} */}
-          {todoId.current[index].disabled ? (
-            <Button variant="info">
-              <FontAwesomeIcon icon={faCheck} />
-            </Button>
+          {console.log(editList)}
+          {editList.length !== 0 ? (
+            editList.map((item, i) => {
+              return (
+                <>
+                  {item === index ? (
+                    <>
+                      <Button variant="info" key={item}>
+                        <FontAwesomeIcon icon={faCheck} />
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="secondary"
+                        key={item}
+                        onClick={() => EditItem(index)}
+                      >
+                        <FontAwesomeIcon icon={faPencilAlt} />
+                      </Button>
+                      <Button
+                        variant="danger"
+                        key={i}
+                        onClick={() => DeleteItem(index)}
+                      >
+                        <FontAwesomeIcon icon={faTrashAlt} />
+                      </Button>
+                    </>
+                  )}
+                </>
+              );
+            })
           ) : (
             <>
               <Button variant="secondary" onClick={() => EditItem(index)}>
                 <FontAwesomeIcon icon={faPencilAlt} />
               </Button>
-              <Button
-                variant="danger"
-                key={index}
-                onClick={() => DeleteItem(index)}
-              >
+              <Button variant="danger" onClick={() => DeleteItem(index)}>
                 <FontAwesomeIcon icon={faTrashAlt} />
               </Button>
             </>
