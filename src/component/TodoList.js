@@ -13,6 +13,7 @@ function TodoAddItem({ onClickAddItem }) {
   const handleOnClickAddItem = () => {
     const { value } = inputRef.current;
     onClickAddItem(value);
+    inputRef.current.value="";
   };
 
   return (
@@ -47,6 +48,7 @@ function TodoListItem({
   onClickDelete,
   OnChangeSaveInputValue,
   onClickEnableIndexEdit,
+  onClickEditDone,
 }) {
   const handleOnChangeInput = (event) => {
     const { value } = event.target;
@@ -54,13 +56,13 @@ function TodoListItem({
   };
 
   console.log("isEnableEdit", isEnableEdit);
+
   return (
     <li className="list-group-item list-group-item-light " key={indexKey}>
       <Form.Control
         value={item}
         readOnly={false}
-        disabled={!isEnableEdit}
-        // ref={(el) => (todoId.current[index] = el)}
+        disabled={!isEnableEdit }
         onChange={handleOnChangeInput}
       />
 
@@ -69,12 +71,11 @@ function TodoListItem({
         className="position-absolute end-0 top-0"
         size="sm"
       >
-        {isEnableEdit && (
-          <Button variant="info" key={item}>
+        {(isEnableEdit)? (
+          <Button variant="info" key={item} onClick={()=>{onClickEditDone(indexKey)}}>
             <FontAwesomeIcon icon={faCheck} />
           </Button>
-        )}
-        {!isEnableEdit && (
+        ): (
           <>
             <Button
               variant="secondary"
@@ -87,6 +88,7 @@ function TodoListItem({
             </Button>
           </>
         )}
+        
       </ButtonGroup>
     </li>
   );
@@ -98,6 +100,7 @@ function TodoList({
   onClickEnableIndexEdit,
   onClickDelete,
   OnChangeSaveInputValue,
+  onClickEditDone,
 }) {
   return (
     <ul className="m-3 list-group">
@@ -109,19 +112,25 @@ function TodoList({
           onClickEnableIndexEdit={onClickEnableIndexEdit}
           onClickDelete={onClickDelete}
           OnChangeSaveInputValue={OnChangeSaveInputValue}
+          onClickEditDone={onClickEditDone}
         />
+        
       ))}
     </ul>
   );
 }
 
-export function Todo() {
-  const [todoList, setTodoList] = useState(["a", "b"]);
+export default function Todo() {
+  const [todoList, setTodoList] = useState([]);
   const [enableEditIndexList, setEnableEditIndexList] = useState([]);
   const [error, updateError] = useState("");
-
   const handleOnClickAddItemValue = (value) => {
-    setTodoList((preState) => [...preState, value]);
+    if(value){
+      setTodoList((preState) => [...preState, value]);
+      updateError("")
+    }else{
+      updateError("Input Required")
+    }
   };
 
   const handleOnClickEnableIndexEdit = (indexKey) => {
@@ -132,6 +141,8 @@ export function Todo() {
     setTodoList((preState) =>
       preState.filter((_, currentIndex) => currentIndex !== deleteIndexKey)
     );
+    setEnableEditIndexList((preState)=> preState.filter((_,currentIndex)=>currentIndex!==deleteIndexKey))
+  
   };
 
   const handleOnChangeSaveInputValue = (value, indexKey) => {
@@ -142,16 +153,21 @@ export function Todo() {
     setTodoList(updatedTodoList);
   };
 
+  const handleOnClickEditDone=(indexKey)=>{
+    setEnableEditIndexList((preState)=> preState.filter((item,currentIndex)=>item!==indexKey))
+  }
+
   return (
     <Fragment>
       <TodoAddItem onClickAddItem={handleOnClickAddItemValue} />
-      <TodoError />
+      <TodoError error={error} />
       <TodoList
         list={todoList}
         enableEditIndexList={enableEditIndexList}
         onClickDelete={handleOnClickDelete}
         onClickEnableIndexEdit={handleOnClickEnableIndexEdit}
         OnChangeSaveInputValue={handleOnChangeSaveInputValue}
+        onClickEditDone={handleOnClickEditDone}
       />
     </Fragment>
   );
