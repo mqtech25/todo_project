@@ -13,7 +13,7 @@ function TodoAddItem({ onClickAddItem }) {
   const handleOnClickAddItem = () => {
     const { value } = inputRef.current;
     onClickAddItem(value);
-    inputRef.current.value="";
+    inputRef.current.value = "";
   };
 
   return (
@@ -58,11 +58,15 @@ function TodoListItem({
   console.log("isEnableEdit", isEnableEdit);
 
   return (
-    <li className="list-group-item list-group-item-light " key={indexKey}>
+    <li
+      className="list-group-item list-group-item-light d-flex align-items-center gap-2"
+      key={indexKey}
+    >
+      <Form.Check type="checkbox" isValid />
       <Form.Control
         value={item}
         readOnly={false}
-        disabled={!isEnableEdit }
+        disabled={!isEnableEdit}
         onChange={handleOnChangeInput}
       />
 
@@ -71,11 +75,17 @@ function TodoListItem({
         className="position-absolute end-0 top-0"
         size="sm"
       >
-        {(isEnableEdit)? (
-          <Button variant="info" key={item} onClick={()=>{onClickEditDone(indexKey)}}>
+        {isEnableEdit ? (
+          <Button
+            variant="info"
+            key={item}
+            onClick={() => {
+              onClickEditDone(indexKey);
+            }}
+          >
             <FontAwesomeIcon icon={faCheck} />
           </Button>
-        ): (
+        ) : (
           <>
             <Button
               variant="secondary"
@@ -88,7 +98,6 @@ function TodoListItem({
             </Button>
           </>
         )}
-        
       </ButtonGroup>
     </li>
   );
@@ -114,7 +123,6 @@ function TodoList({
           OnChangeSaveInputValue={OnChangeSaveInputValue}
           onClickEditDone={onClickEditDone}
         />
-        
       ))}
     </ul>
   );
@@ -125,11 +133,11 @@ export default function Todo() {
   const [enableEditIndexList, setEnableEditIndexList] = useState([]);
   const [error, updateError] = useState("");
   const handleOnClickAddItemValue = (value) => {
-    if(value){
+    if (value) {
       setTodoList((preState) => [...preState, value]);
-      updateError("")
-    }else{
-      updateError("Input Required")
+      updateError("");
+    } else {
+      updateError("Input Required");
     }
   };
 
@@ -141,8 +149,9 @@ export default function Todo() {
     setTodoList((preState) =>
       preState.filter((_, currentIndex) => currentIndex !== deleteIndexKey)
     );
-    setEnableEditIndexList((preState)=> preState.filter((_,currentIndex)=>currentIndex!==deleteIndexKey))
-  
+    setEnableEditIndexList((preState) =>
+      preState.filter((_, currentIndex) => currentIndex !== deleteIndexKey)
+    );
   };
 
   const handleOnChangeSaveInputValue = (value, indexKey) => {
@@ -153,9 +162,11 @@ export default function Todo() {
     setTodoList(updatedTodoList);
   };
 
-  const handleOnClickEditDone=(indexKey)=>{
-    setEnableEditIndexList((preState)=> preState.filter((item,currentIndex)=>item!==indexKey))
-  }
+  const handleOnClickEditDone = (indexKey) => {
+    setEnableEditIndexList((preState) =>
+      preState.filter((item, currentIndex) => item !== indexKey)
+    );
+  };
 
   return (
     <Fragment>
